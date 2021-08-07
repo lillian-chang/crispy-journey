@@ -1,0 +1,41 @@
+public void INSERT(TABLE_VO _vo, SqlConnection _sqlConn, SqlTransaction _sqlTran, out string _strOutStr, out string _strOutErr)
+        {
+            string strMethod = "INSERT";
+            string strDBMethod = "SP_INSERT";
+            MSSQL objMSSQL = new Yulun.Data.MSSQL();
+            YLLog.writeTrace(STR_METHOD_IN, STR_PROGRAM_NAME, strMethod);
+
+            _strOutStr = "E";
+            _strOutErr = "";
+
+            try
+            {
+                //Parameters setting
+                SqlParameter[] parameterValue =
+                {
+                    new SqlParameter("vstrData1", SqlDbType.NVarChar),                    
+                    new SqlParameter("vstrData2", SqlDbType.NVarChar),
+                    new SqlParameter("outStr", SqlDbType.VarChar),
+                    new SqlParameter("outErr", SqlDbType.VarChar)
+                };
+
+                parameterValue[0].Value = _vo.Data1;
+                parameterValue[1].Value = _vo.Data2;
+                parameterValue[2].Direction = System.Data.ParameterDirection.Output;
+                parameterValue[2].Size = 1;
+                parameterValue[3].Direction = System.Data.ParameterDirection.Output;
+                parameterValue[3].Size = 1000;
+
+                YLLog.writeSqlDbTrace(strDBMethod, parameterValue, STR_PROGRAM_NAME, strMethod);
+                objMSSQL.executeNonQuery(strDBMethod, CommandType.StoredProcedure, _sqlConn, _sqlTran, parameterValue);
+
+                _strOutStr = parameterValue[2].Value.ToString();
+                _strOutErr = parameterValue[3].Value.ToString();
+            }
+            catch (Exception ex)
+            {
+                YLLog.writeSqlDbError(strDBMethod, null, STR_PROGRAM_NAME, strMethod, "Exception = " + ex.ToString(), "", "");
+                _strOutErr = "Failed to insert data！";
+            }
+            YLLog.writeTrace(STR_METHOD_OUT, STR_PROGRAM_NAME, strMethod);
+        }
