@@ -2,7 +2,7 @@
 crispy-journey is an example of transaction written in Models DA 
 
 ## Environment/ Framework
-VS 2017/ ASP .NET
+VS 2017/ .NET
 
 ## Language
 C#
